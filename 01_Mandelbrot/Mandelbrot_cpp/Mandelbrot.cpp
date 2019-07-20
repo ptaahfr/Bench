@@ -152,14 +152,14 @@ void print_result(int32_t const * result, intptr_t stride, int width, int height
 }
 
 #include <chrono>
-#include <cstring>
 #include <vector>
+#include <algorithm>
 
 int main()
 {
     enum { width = 100 };
     enum { height = 25 };
-    enum { repeatCount = 100 };
+    enum { repeatCount = 16 };
     enum { maxResult = 256 };
 
     std::vector<int32_t> result(width*height);
@@ -189,7 +189,10 @@ int main()
 
         std::cout << "Timing " << (version ? "[AVX2]: " : ": ") << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0f / repeatCount << " ms" << std::endl;
 
-        print_result(result.data(), width, width, height);
+        if (width < 128 && height < 128)
+        {
+            print_result(result.data(), width, width, height);
+        }
     }
 
     return 0;
