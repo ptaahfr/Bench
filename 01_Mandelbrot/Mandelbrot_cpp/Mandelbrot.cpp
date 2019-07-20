@@ -128,7 +128,7 @@ void compute_mandelbrot(int32_t * result, int32_t maxResult, intptr_t stride, in
     auto const xStep = (xMax - xMin) / (width - 1);
     auto const yStep = (yMax - yMin) / (height - 1);
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic)
     for (int y = 0; y < height; ++y)
     {
         auto const resultLine = &result[y * stride];
@@ -153,6 +153,7 @@ void print_result(int32_t const * result, intptr_t stride, int width, int height
 
 #include <chrono>
 #include <cstring>
+#include <vector>
 
 int main()
 {
@@ -161,27 +162,34 @@ int main()
     enum { repeatCount = 100 };
     enum { maxResult = 256 };
 
-    int32_t result[width*height];
+    std::vector<int32_t> result(width*height);
 
     for (int version = 0; version <= 1; ++version)
     {
-        auto start = std::chrono::high_resolution_clock::now();
+        if (version > 0)
+        {
+            std::fill(result.begin(), result.end(), 0);
+        }
 
-        std::memset(result, 0, width*height*sizeof(result[0]));
+        auto start = std::chrono::high_resolution_clock::now();
 
         for (int repeat = 0; repeat < repeatCount; ++repeat)
         {
             if (version)
-                compute_mandelbrot(result, maxResult, width, width, height, -0.5f, 0.0f, 3.0f, 2.0f, std::true_type());
+            {
+                compute_mandelbrot(result.data(), maxResult, width, width, height, -0.5f, 0.0f, 3.0f, 2.0f, std::true_type());
+            }
             else
-                compute_mandelbrot(result, maxResult, width, width, height, -0.5f, 0.0f, 3.0f, 2.0f, std::false_type());
+            {
+                compute_mandelbrot(result.data(), maxResult, width, width, height, -0.5f, 0.0f, 3.0f, 2.0f, std::false_type());
+            }
         }
 
         auto end = std::chrono::high_resolution_clock::now();
 
         std::cout << "Timing " << (version ? "[AVX2]: " : ": ") << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0f / repeatCount << " ms" << std::endl;
 
-        print_result(result, width, width, height);
+        print_result(result.data(), width, width, height);
     }
 
     return 0;
