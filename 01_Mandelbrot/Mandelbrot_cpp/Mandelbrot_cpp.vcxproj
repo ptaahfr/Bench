@@ -89,7 +89,6 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <OpenMP>GenerateParallelCode</OpenMP>
       <UseProcessorExtensions>HOST</UseProcessorExtensions>
     </ClCompile>
     <Link>
@@ -105,7 +104,6 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <OpenMP>GenerateParallelCode</OpenMP>
       <UseProcessorExtensions>HOST</UseProcessorExtensions>
     </ClCompile>
     <Link>
