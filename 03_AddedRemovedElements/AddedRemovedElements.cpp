@@ -118,7 +118,7 @@ std::pair<size_t, size_t> using_set(std::vector<ELEM_TYPE> const & array1, std::
     size_t added = 0;
     size_t removed = 0;
 
-    std::set<ELEM_TYPE> tempSet1, tempSet2;
+    SET_TYPE tempSet1, tempSet2;
 
 
     for (auto const & elt1 : array1)
@@ -142,12 +142,6 @@ std::pair<size_t, size_t> using_set(std::vector<ELEM_TYPE> const & array1, std::
     return std::make_pair(removed, added);
 }
 
-template <typename ELEM_TYPE, typename SET_TYPE = std::set<ELEM_TYPE> >
-std::pair<size_t, size_t> using_unordered_set(std::vector<ELEM_TYPE> const & array1, std::vector<ELEM_TYPE> const & array2)
-{
-    return using_set<ELEM_TYPE, std::unordered_set<ELEM_TYPE> >(array1, array2);
-}
-
 template <typename FUNC, typename ELEM_TYPE>
 void test_one(char const * label, FUNC && f, std::vector<ELEM_TYPE> const & array1, std::vector<ELEM_TYPE> const & array2)
 {
@@ -167,7 +161,7 @@ void test_all(size_t count)
     auto array2(generate_random_permutation<ELEM_TYPE>(count));
 
     test_one("using_set", using_set<ELEM_TYPE>, array1, array2);
-    test_one("using_unorderedset", using_set<ELEM_TYPE>, array1, array2);
+    test_one("using_unordered_set", using_set<ELEM_TYPE, std::unordered_set<ELEM_TYPE> >, array1, array2);
     test_one("using_bitfield", using_bitfield<ELEM_TYPE>, array1, array2);
     test_one("brute_force", brute_force<ELEM_TYPE>, array1, array2);
 }
